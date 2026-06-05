@@ -14,8 +14,17 @@ if ! command -v md-to-pdf >/dev/null 2>&1; then
 fi
 
 # Install the CLI
-echo "Installing m -> /usr/local/bin/m"
-install -m 755 bin/m /usr/local/bin/m
+# Stock macOS (especially Apple Silicon) ships /usr/local/bin root-owned or
+# missing entirely, so escalate for this one step when needed
+BIN_DIR=/usr/local/bin
+echo "Installing m -> $BIN_DIR/m"
+if [ -d "$BIN_DIR" ] && [ -w "$BIN_DIR" ]; then
+  install -m 755 bin/m "$BIN_DIR/m"
+else
+  echo "$BIN_DIR is not writable; using sudo (you may be asked for your password)"
+  sudo mkdir -p "$BIN_DIR"
+  sudo install -m 755 bin/m "$BIN_DIR/m"
+fi
 
 # Install the Quick Action
 echo "Installing Quick Action -> ~/Library/Services/Make PDF.workflow"
