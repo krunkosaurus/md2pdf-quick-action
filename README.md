@@ -32,7 +32,7 @@ cd md2pdf-quick-action
 ./install.sh
 ```
 
-The installer copies `m` to `/usr/local/bin` and the Quick Action to `~/Library/Services`, then refreshes the Services registry so it appears immediately. If "Make PDF" doesn't show up in the right-click menu right away, run `killall Finder` or log out and back in.
+The installer copies `m` to `/usr/local/bin` (prompting for `sudo` if that directory is root-owned or missing, as it is on stock macOS) and the Quick Action to `~/Library/Services`, then refreshes the Services registry so it appears immediately. If "Make PDF" doesn't show up in the right-click menu right away, run `killall Finder` or log out and back in.
 
 ## Uninstall
 
