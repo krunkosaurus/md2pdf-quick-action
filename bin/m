@@ -1,0 +1,27 @@
+#!/bin/bash
+# m — convert a markdown file to PDF and open it
+# Usage: m file.md [file2.md ...]
+set -euo pipefail
+
+# Finder Quick Actions run with a minimal PATH; make sure node + md-to-pdf are reachable
+export PATH="$HOME/.local/bin:/usr/local/bin:/opt/homebrew/bin:$PATH"
+
+if [ $# -eq 0 ]; then
+  echo "Usage: m <file.md> [more.md ...]" >&2
+  exit 1
+fi
+
+for f in "$@"; do
+  if [ ! -f "$f" ]; then
+    echo "m: no such file: $f" >&2
+    continue
+  fi
+  md-to-pdf "$f"
+  pdf="${f%.*}.pdf"
+  if [ -f "$pdf" ]; then
+    # PDFs generated via the Quick Action get quarantined, which makes
+    # Preview fail with a bogus "you don't have permission" error
+    xattr -d com.apple.quarantine "$pdf" 2>/dev/null || true
+    open "$pdf"
+  fi
+done
